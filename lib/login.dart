@@ -13,7 +13,7 @@ Future<void> login(String email, String password) async {
     // Login successful, navigate to the dashboard or home screen
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
-      debugPrint('No user found for that email.');
+      debugPrint('No user found for email.');
     } else if (e.code == 'wrong-password') {
       debugPrint('Wrong password provided for that user.');
     }
