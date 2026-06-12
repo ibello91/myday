@@ -2,6 +2,25 @@ import 'package:flutter/material.dart';
 import 'dashboard.dart';
 import 'forgot_password.dart';
 import 'sign_up.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+Future<void> login(String email, String password) async {
+  try {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    // Login successful, navigate to the dashboard or home screen
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      debugPrint('No user found for that email.');
+    } else if (e.code == 'wrong-password') {
+      debugPrint('Wrong password provided for that user.');
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+}
 
 class Login extends StatelessWidget {
   const Login({super.key});

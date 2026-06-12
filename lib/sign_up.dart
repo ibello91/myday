@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
 import 'login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+Future<void> signUp(String email, String password) async {
+  try {
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    // Sign-up successful, navigate to the dashboard or home screen
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'weak-password') {
+      print('The password provided is too weak.');
+    } else if (e.code == 'email-already-in-use') {
+      print('The account already exists for that email.');
+    }
+  } catch (e) {
+    print(e.toString());
+  }
+}
 
 class SignUp extends StatelessWidget {
   const SignUp({super.key});

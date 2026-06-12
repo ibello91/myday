@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+Future<void> logout() async {
+  try {
+    await FirebaseAuth.instance.signOut();
+    // Logout successful, navigate to the login screen
+  } catch (e) {
+    print(e.toString());
+  }
+}
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
