@@ -27,7 +27,10 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Welcome Back'), backgroundColor: Colors.blue),
+      appBar: AppBar(
+        title: Text('Welcome Back to MyDay'),
+        backgroundColor: Colors.blue,
+      ),
       body: Column(
         children: [
           Text('Email or phone number'),
