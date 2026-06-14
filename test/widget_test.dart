@@ -11,30 +11,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:myday/main.dart';
 
 void main() {
-  // Provide a local minimal MyApp for the test in case the real project
-  // does not expose a MyApp class.
-  class MyApp extends StatefulWidget {
-    const MyApp({Key? key}) : super(key: key);
-    @override
-    State<MyApp> createState() => _MyAppState();
-  }
-
-  class _MyAppState extends State<MyApp> {
-    int _counter = 0;
-    @override
-    Widget build(BuildContext context) {
-      return MaterialApp(
-        home: Scaffold(
-          body: Center(child: Text('$_counter')),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => setState(() => _counter++),
-            child: const Icon(Icons.add),
-          ),
-        ),
-      );
-    }
-  }
-
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
