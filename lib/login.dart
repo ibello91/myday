@@ -1,75 +1,102 @@
 import 'package:flutter/material.dart';
-import 'dashboard.dart';
-import 'forgot_password.dart';
-import 'sign_up.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'auth_services.dart';
+import 'register_page.dart';
+import 'forget_password.dart';
 
-Future<void> login(String email, String password) async {
-  try {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    // Login successful, navigate to the dashboard or home screen
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      debugPrint('No user found for email.');
-    } else if (e.code == 'wrong-password') {
-      debugPrint('Wrong password provided for that user.');
-    }
-  } catch (e) {
-    debugPrint(e.toString());
-  }
+class Login extends StatefulWidget {
+  const Login({super.key});
+
+  @override
+  State<Login> createState() => _LoginState();
 }
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class _LoginState extends State<Login> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authServices = AuthService();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void loginUser() async {
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill in all fields")),
+      );
+      return;
+    }
+
+    try {
+      // 1. Log the user in via Firebase
+      await _authServices.signInWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+
+      // DO NOT USE NAVIGATOR HERE.
+      // AuthGate will automatically switch the screen to Dashboard.
+    } catch (e) {
+      debugPrint("Login Error: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login Failed: ${e.toString()}")),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Welcome Back to MyDay'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Column(
-        children: [
-          Text('Email or phone number'),
-          SizedBox(height: 10),
-          TextFormField(),
-          SizedBox(height: 20),
-          Text('Password'),
-          SizedBox(height: 10),
-          TextFormField(obscureText: true),
-          SizedBox(height: 20),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ForgotPassword()),
-              );
-            },
-            child: Text('Forgot password?'),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-            },
-            child: Text('Login'),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SignUp()),
-              );
-            },
-            child: Text('Don\'t have an account? Sign up'),
-          ),
-        ],
+      appBar: AppBar(title: const Text("Login"), centerTitle: true),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: "Email"),
+            ),
+            TextFormField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: "Password"),
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: loginUser,
+                child: const Text("Sign In"),
+              ),
+            ),
+            // Link to take user to the Registration Screen
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const Register()),
+                );
+              },
+              child: const Text("Don't have an account? Sign Up"),
+            ),
+            // Link to take user to the Forget Password Screen
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ForgetPassword(),
+                  ),
+                );
+              },
+              child: const Text("Forgot Password?"),
+            ),
+          ],
+        ),
       ),
     );
   }

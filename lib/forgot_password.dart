@@ -1,39 +1,48 @@
 import 'package:flutter/material.dart';
+import 'forget_password_sent.dart';
+import 'auth_services.dart';
 import 'reset_link_sent.dart';
 
-class ForgotPassword extends StatelessWidget {
-  const ForgotPassword({super.key});
+class ForgetPassword extends StatelessWidget {
+  const ForgetPassword({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Card(
-            color: Colors.lightBlue[50],
-            child: ListTile(
-              title: Text(
-                'Forgot Password',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                'Enter your email address to receive a password reset link.',
+      appBar: AppBar(title: const Text('Forget Password')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Enter your email to reset your password',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            const TextField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
               ),
             ),
-          ),
-          Text('Email address'),
-          SizedBox(height: 10),
-          TextFormField(),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ResetLinkSent()),
-              );
-            },
-            child: Text('Send reset link'),
-          ),
-        ],
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ResetLinkSent(),
+                  ),
+                );
+                // Call the password reset function from AuthServices
+                ('beeahmadahmad@gmail.com');
+              },
+              child: const Text('Send Reset Link'),
+            ),
+          ],
+        ),
       ),
     );
   }
