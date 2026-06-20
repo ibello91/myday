@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dashboard.dart';
 
 class Register extends StatefulWidget {
@@ -34,10 +33,9 @@ class _RegisterState extends State<Register> {
     }
 
     try {
-      // Use FirebaseAuth directly to create the user
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+      await _authServices.createUserWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
       );
 
       // Once Firebase registers the user successfully, AuthGate will
