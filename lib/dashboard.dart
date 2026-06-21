@@ -33,36 +33,35 @@ class Dashboard extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            GestureDetector(
-              onTap: () {
+            _buildCard(
+              icon: Icons.medical_services,
+              title: "Consult a Doctor",
+              subtitle: "Talk to a qualified doctor online",
+              onPress: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Consult()),
                 );
               },
-              child: _buildCard(
-                icon: Icons.medical_services,
-                title: "Consult a Doctor",
-                subtitle: "Talk to a qualified doctor online",
-              ),
             ),
 
-            GestureDetector(
-              onTap: () {
+            _buildCard(
+              icon: Icons.calendar_month,
+              title: "Book Appointment",
+              subtitle: "Schedule your hospital visit",
+              onPress: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Booking()),
                 );
               },
-              child: _buildCard(
-                icon: Icons.calendar_month,
-                title: "Book Appointment",
-                subtitle: "Schedule your hospital visit",
-              ),
             ),
 
-            GestureDetector(
-              onTap: () {
+            _buildCard(
+              icon: Icons.local_pharmacy,
+              title: "Order Medicine",
+              subtitle: "Buy medicines from trusted pharmacies",
+              onPress: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -70,39 +69,30 @@ class Dashboard extends StatelessWidget {
                   ),
                 );
               },
-              child: _buildCard(
-                icon: Icons.local_pharmacy,
-                title: "Order Medicine",
-                subtitle: "Buy medicines from trusted pharmacies",
-              ),
             ),
 
-            GestureDetector(
-              onTap: () {
+            _buildCard(
+              icon: Icons.payments,
+              title: "Pay Hospital Bills",
+              subtitle: "Pay your bills securely online",
+              onPress: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Paybills()),
                 );
               },
-              child: _buildCard(
-                icon: Icons.payments,
-                title: "Pay Hospital Bills",
-                subtitle: "Pay your bills securely online",
-              ),
             ),
 
-            GestureDetector(
-              onTap: () {
+            _buildCard(
+              icon: Icons.support_agent,
+              title: "Contact Us",
+              subtitle: "Reach our support team anytime",
+              onPress: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Contact()),
                 );
               },
-              child: _buildCard(
-                icon: Icons.support_agent,
-                title: "Contact Us",
-                subtitle: "Reach our support team anytime",
-              ),
             ),
           ],
         ),
@@ -127,6 +117,7 @@ class Dashboard extends StatelessWidget {
     required IconData icon,
     required String title,
     required String subtitle,
+    VoidCallback? onPress,
   }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
@@ -139,7 +130,7 @@ class Dashboard extends StatelessWidget {
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-        onTap: () {},
+        onTap: onPress,
       ),
     );
   }
