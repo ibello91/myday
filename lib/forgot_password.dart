@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'reset_link_sent.dart';
 
-class ForgetPasswordSent extends StatelessWidget {
-  const ForgetPasswordSent({super.key});
+class ForgotPassword extends StatelessWidget {
+  const ForgotPassword({super.key});
 
   @override
   Widget build(BuildContext context) {

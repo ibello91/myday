@@ -1,87 +1,176 @@
 import 'package:flutter/material.dart';
-import 'auth_services.dart';
-import 'register_page.dart';
+import 'sign_up.dart';
+import 'forgot_password.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dashboard.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  Login({super.key});
 
+  String email = "";
+  String password = "";
+  bool incorrect = false;
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authServices = AuthService();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void loginUser() async {
-    if (_emailController.text.trim().isEmpty ||
-        _passwordController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill in all fields")),
-      );
-      return;
-    }
-
-    try {
-      // 1. Log the user in via Firebase
-      await _authServices.signInWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
-
-      // DO NOT USE NAVIGATOR HERE.
-      // AuthGate will automatically switch the screen to Dashboard.
-    } catch (e) {
-      debugPrint("Login Error: $e");
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login Failed: ${e.toString()}")),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Login"),
+        centerTitle: true,
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: "Password"),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: loginUser,
-                child: const Text("Sign In"),
+            const SizedBox(height: 20),
+
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.green.shade100,
+              child: const Icon(
+                Icons.local_hospital,
+                size: 45,
+                color: Colors.green,
               ),
             ),
-            // Link to take user to the Registration Screen
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const Register()),
-                );
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "Welcome Back",
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 8),
+
+            const Text(
+              "Sign in to continue",
+              style: TextStyle(color: Colors.grey),
+            ),
+
+            const SizedBox(height: 30),
+
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  widget.email = value;
+                });
               },
-              child: const Text("Don't have an account? Sign Up"),
+              decoration: InputDecoration(
+                labelText: "Email or Phone number",
+                prefixIcon: const Icon(Icons.email),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            TextField(
+              obscureText: true,
+              onChanged: (value) {
+                setState(() {
+                  widget.password = value;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: "Password",
+                prefixIcon: const Icon(Icons.lock),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ForgotPassword(),
+                    ),
+                  );
+                },
+                child: const Text("Forgot Password?"),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                onPressed: () {
+                  print(widget.email);
+                  print(widget.password);
+                  try {
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                          email: widget.email,
+                          password: widget.password,
+                        )
+                        .then((value) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Dashboard(),
+                            ),
+                          );
+                        })
+                        .catchError((error) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Login failed: ${error.toString()}',
+                              ),
+                            ),
+                          );
+                        });
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('An error occurred: ${e.toString()}'),
+                      ),
+                    );
+                  }
+                },
+                child: const Text(
+                  "Login",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Don't have an account?"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignUp()),
+                    );
+                  },
+                  child: const Text("Sign Up"),
+                ),
+              ],
             ),
           ],
         ),
